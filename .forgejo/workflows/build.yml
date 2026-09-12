@@ -26,6 +26,8 @@ jobs:
           cat /usr/lib/binfmt.d/qemu-$ARCH.conf
           >/proc/sys/fs/binfmt_misc/register
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - name: delete
         run: |
           VERSION=`head -n 1 debian/changelog | cut -d')' -f1 | cut -d'(' -f2`

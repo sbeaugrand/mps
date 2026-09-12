@@ -6,8 +6,8 @@
  ******************************************************************************/
 #pragma once
 #include <variant>
-#include <jsonrpccpp/client.h>
-#include <jsonrpccpp/client/connectors/httpclient.h>
+#include <cpphttplibconnector.hpp>
+#include <jsonrpccxx/client.hpp>
 #include "Input.h"
 #include "Output.h"
 
@@ -74,17 +74,17 @@ private:
         "CHMRW"
         "DINSY"
         "EJOTZ";
-    void currentTitle(const Json::Value json);
-    void currentAlbum(const Json::Value json);
+    void currentTitle(const nlohmann::json json);
+    void currentAlbum(const nlohmann::json json);
     void albumList();
     void letters(int pos);
 
     Input& mInput;
     Output& mOutput;
-    jsonrpc::HttpClient mHttpClient;
-    jsonrpc::Client mJsonClient;
+    CppHttpLibClientConnector mHttpClient;
+    jsonrpccxx::JsonRpcClient mJsonClient;
     std::string::size_type mShift = 0;
-    Json::Value mArtist;
+    nlohmann::json mArtist;
     unsigned int mAlbumPos = 0;
     int mArtistPos = 0;
     enum {

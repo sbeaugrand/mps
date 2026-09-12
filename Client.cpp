@@ -14,10 +14,10 @@
 Client::Client(Input& input, Output& output, const std::string& url)
     : mInput(input)
     , mOutput(output)
-    , mHttpClient(url)
-    , mJsonClient(mHttpClient)
+    , mHttpClient(url, 8383)
+    , mJsonClient(mHttpClient, jsonrpccxx::version::v2)
 {
-    mHttpClient.SetTimeout(20000);
+    //mHttpClient.SetTimeout(20000);
 
     std::string tz;
     if (std::ifstream("/etc/timezone") >> tz; tz == "Europe/Paris") {
@@ -50,19 +50,19 @@ Client::close()
  * \fn currentTitle
  ******************************************************************************/
 void
-Client::currentTitle(const Json::Value json)
+Client::currentTitle(const nlohmann::json js)
 {
     try {
-        Json::Value error("");
-        auto pause = json.get("pause", false).asBool();
-        auto pos = json.get("pos", -1).asInt() + 1;
-        auto length = json.get("length", -1).asInt() + 1;
-        auto title = json.get("title", error).asString();
-        auto album = json.get("album", error).asString();
-        auto artist = json.get("artist", error).asString();
-        auto date = json.get("date", error).asString();
-        auto cs = json.get("cs", 0).asInt();
-        auto abrev = json.get("abrev", error).asString();
+        nlohmann::json error("");
+        auto pause = js.value<bool>("pause", false);
+        auto pos = js.value<int>("pos", -1) + 1;
+        auto length = js.value<int>("length", -1) + 1;
+        auto title = js.value<std::string>("title", error);
+        auto album = js.value<std::string>("album", error);
+        auto artist = js.value<std::string>("artist", error);
+        auto date = js.value<std::string>("date", error);
+        auto cs = js.value<int>("cs", 0);
+        auto abrev = js.value<std::string>("abrev", error);
         int diffmax = -Output::LCD_SHIFT;
         if (mShift > 0) {
             auto size = album.size();
@@ -108,12 +108,12 @@ Client::currentTitle(const Json::Value json)
                       ' ' + extra,
                       title);
         if (cs < 0) {
-            this->currentTitle(mJsonClient.CallMethod("checksum",
-                                                      Json::Value()));
+            this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(
+                                   "checksum", nlohmann::json()));
         }
-    } catch (jsonrpc::JsonRpcException& e) {
+    } catch (jsonrpccxx::JsonRpcException& e) {
         ERROR(e.what());
-    } catch (const Json::LogicError& e) {
+    } catch (const std::exception& e) {
         ERROR(e.what());
     }
 }
@@ -122,10 +122,10 @@ Client::currentTitle(const Json::Value json)
  * \fn currentAlbum
  ******************************************************************************/
 void
-Client::currentAlbum(const Json::Value json)
+Client::currentAlbum(const nlohmann::json js)
 {
     char dateR[4] = {};
-    if (int d = json["days"].asInt(); d > 0) {
+    if (int d = js.value<int>("days", 0); d > 0) {
         int dInit = d;
         if (d > 9) {
             d /= 7;
@@ -146,10 +146,10 @@ Client::currentAlbum(const Json::Value json)
         dateR[1] = '0' + d;
         dateR[0] = ' ';
     }
-    mOutput.write(json["artist"].asString(),
-                  json["album"].asString(),
-                  json["date"].asString(),
-                  json["abrev"].asString() + dateR);
+    mOutput.write(js.value<std::string>("artist", "?"),
+                  js.value<std::string>("album", "?"),
+                  js.value<std::string>("date", "?"),
+                  js.value<std::string>("abrev", "?") + dateR);
 }
 
 /******************************************************************************!
@@ -158,14 +158,19 @@ Client::currentAlbum(const Json::Value json)
 void
 Client::albumList()
 {
-    Json::Value empty("");
-    auto line1 = mArtist.get("artist", empty).asString();
-    auto line2 = mArtist["album"].get(Json::ArrayIndex(mAlbumPos - 1),
-                                      empty).asString();
-    auto line3 = mArtist["album"].get(Json::ArrayIndex(mAlbumPos),
-                                      empty).asString();
-    auto line4 = mArtist["album"].get(Json::ArrayIndex(mAlbumPos + 1),
-                                      empty).asString();
+    auto line1 = mArtist.value<std::string>("artist", "");
+    auto album = mArtist["album"];
+    auto size = album.size();
+    std::string line2;
+    std::string line3;
+    std::string line4;
+    if (mAlbumPos > 0) {
+        line2 = album[mAlbumPos - 1];
+    }
+    line3 = album[mAlbumPos];
+    if (mAlbumPos + 1 < size) {
+        line4 = album[mAlbumPos + 1];
+    }
     try {
         line3.at(4) = '>';
     } catch (std::out_of_range const& e) {
@@ -183,39 +188,40 @@ Client::albumList()
 void
 Client::letters(int pos)
 {
+    auto artist = mArtist.value<std::string>("artist", "");
     switch (pos) {
     case 0:
-        mOutput.write(mArtist["artist"].asString(),
+        mOutput.write(artist,
                       "    AE",
                       "FJ  KO  PT",
                       "    UZ");
         break;
     case 1:
-        mOutput.write(mArtist["artist"].asString(),
+        mOutput.write(artist,
                       "   A",
                       "B  C  D",
                       "   E");
         break;
     case 2:
-        mOutput.write(mArtist["artist"].asString(),
+        mOutput.write(artist,
                       "   F",
                       "G  H  I",
                       "   J");
         break;
     case 3:
-        mOutput.write(mArtist["artist"].asString(),
+        mOutput.write(artist,
                       "   K",
                       "L  M  N",
                       "   O");
         break;
     case 4:
-        mOutput.write(mArtist["artist"].asString(),
+        mOutput.write(artist,
                       "   P",
                       "Q  R  S",
                       "   T");
         break;
     case 5:
-        mOutput.write(mArtist["artist"].asString(),
+        mOutput.write(artist,
                       "   U",
                       "V  W  Y",
                       "   Z");
@@ -229,28 +235,28 @@ Client::letters(int pos)
 State
 Client::onEvent(const state::Normal& state, const event::Up&)
 {
-    this->currentTitle(mJsonClient.CallMethod("prev", Json::Value()));
+    this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(1, "prev"));
     return state;
 }
 State
 Client::onEvent(const state::Normal& state, const event::Down&)
 {
-    this->currentTitle(mJsonClient.CallMethod("next", Json::Value()));
+    this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(1, "next"));
     return state;
 }
 State
 Client::onEvent(const state::Normal&, const event::Left&)
 {
     try {
-        mArtist = mJsonClient.CallMethod("artist", Json::Value{});
-        int pos = mArtist.get("pos", Json::Value(-1)).asInt();
+        mArtist = mJsonClient.CallMethod<nlohmann::json>(1, "artist");
+        int pos = mArtist.value<int>("pos", -1);
         if (pos >= 0) {
             mAlbumPos = pos;
             this->albumList();
         } else {
             return this->onEvent(state::Album{}, event::Left{});
         }
-    } catch (jsonrpc::JsonRpcException& e) {
+    } catch (jsonrpccxx::JsonRpcException& e) {
         ERROR(e.what());
     }
     return state::Album{};
@@ -258,21 +264,21 @@ Client::onEvent(const state::Normal&, const event::Left&)
 State
 Client::onEvent(const state::Normal& state, const event::Right&)
 {
-    this->currentTitle(mJsonClient.CallMethod("info", Json::Value()));
+    this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(1, "info"));
     return state;
 }
 State
 Client::onEvent(const state::Normal& state, const event::Ok&)
 {
-    this->currentTitle(mJsonClient.CallMethod("ok", Json::Value()));
+    this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(1, "ok"));
     return state;
 }
 State
 Client::onEvent(const state::Normal& state, const event::Setup&)
 {
     try {
-        this->currentAlbum(mJsonClient.CallMethod("rand", Json::Value{}));
-    } catch (jsonrpc::JsonRpcException& e) {
+        this->currentAlbum(mJsonClient.CallMethod<nlohmann::json>(1, "rand"));
+    } catch (jsonrpccxx::JsonRpcException& e) {
         ERROR(e.what());
     }
     return state;
@@ -308,18 +314,19 @@ State
 Client::onEvent(const state::Album&, const event::Right&)
 {
     mShift = 0;
-    this->currentTitle(mJsonClient.CallMethod("info", Json::Value()));
+    this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(1, "info"));
     return state::Normal{};
 }
 State
 Client::onEvent(const state::Album&, const event::Ok&)
 {
     try {
-        Json::Value params;
+        nlohmann::json params;
         params["artist"] = mArtist["artist"];
         params["pos"] = mAlbumPos;
-        this->currentTitle(mJsonClient.CallMethod("album", params));
-    } catch (jsonrpc::JsonRpcException& e) {
+        this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(
+                               1, "album", params));
+    } catch (jsonrpccxx::JsonRpcException& e) {
         ERROR(e.what());
     }
     return state::Normal{};
@@ -336,7 +343,7 @@ Client::onEvent(const state::Artist& state, const event::Up&)
     if (mArtistPos == 0) {
         mArtistPos = 1;
     } else {
-        mArtist["artist"] = mArtist["artist"].asString() +
+        mArtist["artist"] = mArtist.value<std::string>("artist", "") +
             mLetterList.at(mArtistPos - 1);
         mArtistPos = 0;
     }
@@ -349,7 +356,7 @@ Client::onEvent(const state::Artist& state, const event::Down&)
     if (mArtistPos == 0) {
         mArtistPos = 5;
     } else {
-        mArtist["artist"] = mArtist["artist"].asString() +
+        mArtist["artist"] = mArtist.value<std::string>("artist", "") +
             mLetterList.at(mArtistPos - 1 + 20);
         mArtistPos = 0;
     }
@@ -362,7 +369,7 @@ Client::onEvent(const state::Artist& state, const event::Left&)
     if (mArtistPos == 0) {
         mArtistPos = 2;
     } else {
-        mArtist["artist"] = mArtist["artist"].asString() +
+        mArtist["artist"] = mArtist.value<std::string>("artist", "") +
             mLetterList.at(mArtistPos - 1 + 5);
         mArtistPos = 0;
     }
@@ -376,7 +383,7 @@ Client::onEvent(const state::Artist& state, const event::Right&)
     if (mArtistPos == 0) {
         mArtistPos = 4;
     } else {
-        mArtist["artist"] = mArtist["artist"].asString() +
+        mArtist["artist"] = mArtist.value<std::string>("artist", "") +
             mLetterList.at(mArtistPos - 1 + 15);
         mArtistPos = 0;
     }
@@ -389,7 +396,7 @@ Client::onEvent(const state::Artist& state, const event::Ok&)
     if (mArtistPos == 0) {
         mArtistPos = 3;
     } else {
-        mArtist["artist"] = mArtist["artist"].asString() +
+        mArtist["artist"] = mArtist.value<std::string>("artist", "") +
             mLetterList.at(mArtistPos - 1 + 10);
         mArtistPos = 0;
     }
@@ -400,11 +407,11 @@ State
 Client::onEvent(const state::Artist&, const event::Setup&)
 {
     try {
-        Json::Value params;
+        nlohmann::json params;
         params["artist"] = mArtist["artist"];
         params["pos"] = -1;
-        mJsonClient.CallMethod("album", params);
-    } catch (jsonrpc::JsonRpcException& e) {
+        mJsonClient.CallMethod<nlohmann::json>(1, "album", params);
+    } catch (jsonrpccxx::JsonRpcException& e) {
         ERROR(e.what());
     }
     return this->onEvent(state::Normal{}, event::Left{});
@@ -431,22 +438,21 @@ Client::run()
 {
     for (;;) {
         try {
-            auto j = mJsonClient.CallMethod("musicDirectory", Json::Value());
-            if (! j.empty()) {
-                auto d = j.asString();
+            auto d = mJsonClient.CallMethod<std::string>(1, "musicDirectory");
+            if (! d.empty()) {
                 DEBUG(d);
                 mOutput.musicDirectory = d;
             }
             break;
-        } catch (jsonrpc::JsonRpcException& e) {
+        } catch (jsonrpccxx::JsonRpcException& e) {
             ERROR(e.what());
             std::this_thread::sleep_for(std::chrono::seconds(1));
-        } catch (const Json::LogicError& e) {
+        } catch (const std::exception& e) {
             ERROR(e.what());
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
-    this->currentTitle(mJsonClient.CallMethod("info", Json::Value()));
+    this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(1, "info"));
     while (this->loop) {
         mInput.hasEvent.wait(false);
         if (! this->loop) {
@@ -486,7 +492,8 @@ Client::run()
             break;
         case Input::KEY_BACK:
             mShift = 0;
-            this->currentTitle(mJsonClient.CallMethod("info", Json::Value()));
+            this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(
+                                   1, "info"));
             break;
         case Input::KEY_UNDEFINED:
             break;

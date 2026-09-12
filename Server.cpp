@@ -17,14 +17,27 @@
 /******************************************************************************!
  * \fn Server
  ******************************************************************************/
-Server::Server(jsonrpc::AbstractServerConnector& conn,
-               List& list,
+Server::Server(List& list,
                Player& player)
-    : AbstractStubServer(conn, jsonrpc::JSONRPC_SERVER_V1V2)
-    , mList(list)
+    : mList(list)
     , mPlayer(player)
 {
-    this->StartListening();
+    this->Add("list", GetHandle(&Server::list, *this), {});
+    this->Add("info", GetHandle(&Server::info, *this), {});
+    this->Add("rand", GetHandle(&Server::rand, *this), {});
+    this->Add("ok", GetHandle(&Server::ok, *this), {});
+    this->Add("play", GetHandle(&Server::play, *this), {});
+    this->Add("pause", GetHandle(&Server::pause, *this), {});
+    this->Add("stop", GetHandle(&Server::stop, *this), {});
+    this->Add("prev", GetHandle(&Server::prev, *this), {});
+    this->Add("next", GetHandle(&Server::next, *this), {});
+    this->Add("artist", GetHandle(&Server::artist, *this), {});
+    this->Add("album", GetHandle(&Server::album, *this), { "artist", "pos" });
+    this->Add("pos", GetHandle(&Server::pos, *this), { "pos" });
+    this->Add("dir", GetHandle(&Server::dir, *this), { "path" });
+    this->Add("musicDirectory", GetHandle(&Server::musicDirectory, *this), {});
+    this->Add("checksum", GetHandle(&Server::checksum, *this), {});
+    this->Add("quit", GetHandle(&Server::quit, *this), {});
 }
 
 /******************************************************************************!
@@ -33,28 +46,27 @@ Server::Server(jsonrpc::AbstractServerConnector& conn,
 Server::~Server()
 {
     DEBUG("");
-    this->StopListening();
 }
 
 /******************************************************************************!
  * \fn list
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::list()
 {
     DEBUG("");
-    Json::Value result = mPlayer.titleList();
+    nlohmann::json result = mPlayer.titleList();
     return result;
 }
 
 /******************************************************************************!
  * \fn info
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::info()
 {
     DEBUG("");
-    Json::Value result = mPlayer.currentTitle();
+    nlohmann::json result = mPlayer.currentTitle();
     result["abrev"] = mAbrev;
     return result;
 }
@@ -62,7 +74,7 @@ Server::info()
 /******************************************************************************!
  * \fn rand
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::rand()
 {
     DEBUG("");
@@ -71,7 +83,7 @@ Server::rand()
     mSelectTime = std::chrono::steady_clock::now();
     mAbrev = abrev;
     const auto [arti, date, albu] = ::splitPath(path);
-    Json::Value result;
+    nlohmann::json result;
     result["artist"] = arti;
     result["date"] = date;
     result["album"] = albu;
@@ -83,7 +95,7 @@ Server::rand()
 /******************************************************************************!
  * \fn ok
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::ok()
 {
     DEBUG("");
@@ -96,9 +108,9 @@ Server::ok()
             mList.writeLog(mSelect);
             mSelectTime =
                 std::chrono::time_point<std::chrono::steady_clock>::min();
-            Json::Value json = mPlayer.currentTitle();
-            json["cs"] = -1;
-            return json;
+            nlohmann::json js = mPlayer.currentTitle();
+            js["cs"] = -1;
+            return js;
         } else {
             mAbrev.clear();
             mSelectTime =
@@ -111,12 +123,12 @@ Server::ok()
 /******************************************************************************!
  * \fn play
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::play()
 {
     DEBUG("");
     mPlayer.start();
-    Json::Value result = mPlayer.currentTitle();
+    nlohmann::json result = mPlayer.currentTitle();
     result["abrev"] = mAbrev;
     return result;
 }
@@ -124,12 +136,12 @@ Server::play()
 /******************************************************************************!
  * \fn pause
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::pause()
 {
     DEBUG("");
     mPlayer.pause();
-    Json::Value result = mPlayer.currentTitle();
+    nlohmann::json result = mPlayer.currentTitle();
     result["abrev"] = mAbrev;
     return result;
 }
@@ -137,14 +149,14 @@ Server::pause()
 /******************************************************************************!
  * \fn stop
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::stop()
 {
     DEBUG("");
     auto ms = mPlayer.getPlaytime();
     mList.writeResumeTime(ms);
     mPlayer.stop();
-    Json::Value result;
+    nlohmann::json result;
     result["result"] = "ok";
     return result;
 }
@@ -152,12 +164,12 @@ Server::stop()
 /******************************************************************************!
  * \fn prev
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::prev()
 {
     DEBUG("");
     mPlayer.startRel(-1);
-    Json::Value result = mPlayer.currentTitle();
+    nlohmann::json result = mPlayer.currentTitle();
     result["abrev"] = mAbrev;
     return result;
 }
@@ -165,12 +177,12 @@ Server::prev()
 /******************************************************************************!
  * \fn next
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::next()
 {
     DEBUG("");
     mPlayer.startRel(1);
-    Json::Value result = mPlayer.currentTitle();
+    nlohmann::json result = mPlayer.currentTitle();
     result["abrev"] = mAbrev;
     return result;
 }
@@ -178,19 +190,19 @@ Server::next()
 /******************************************************************************!
  * \fn artist
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::artist()
 {
     DEBUG("");
-    Json::Value json = mPlayer.currentTitle();
-    return mList.artist(json["artist"].asString(),
-                        json["album"].asString());
+    nlohmann::json js = mPlayer.currentTitle();
+    return mList.artist(js.value<std::string>("artist", "?"),
+                        js.value<std::string>("album", "?"));
 }
 
 /******************************************************************************!
  * \fn album
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::album(const std::string& artist, int pos)
 {
     DEBUG("");
@@ -203,7 +215,7 @@ Server::album(const std::string& artist, int pos)
         mAbrev = abrev;
         mList.writeLog(path);
     }
-    Json::Value result = mPlayer.currentTitle();
+    nlohmann::json result = mPlayer.currentTitle();
     if (path.empty()) {
         result["abrev"] = mAbrev;
     } else if (pos != -1) {
@@ -215,12 +227,12 @@ Server::album(const std::string& artist, int pos)
 /******************************************************************************!
  * \fn pos
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::pos(int pos)
 {
     DEBUG("");
     mPlayer.startId(pos);
-    Json::Value result = mPlayer.currentTitle();
+    nlohmann::json result = mPlayer.currentTitle();
     result["abrev"] = mAbrev;
     return result;
 }
@@ -228,7 +240,7 @@ Server::pos(int pos)
 /******************************************************************************!
  * \fn dir
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::dir(const std::string& path)
 {
     auto p = path;
@@ -238,7 +250,7 @@ Server::dir(const std::string& path)
                                 p + "/00.m3u")) {
         mPlayer.m3u(p + "/00.m3u");
         mList.writeLog(p + "/00.m3u");
-        return Json::Value{};
+        return nlohmann::json{};
     } else {
         return mList.dir(p);
     }
@@ -258,7 +270,7 @@ Server::quit()
 /******************************************************************************!
  * \fn musicDirectory
  ******************************************************************************/
-std::string
+const std::string&
 Server::musicDirectory()
 {
     return mPlayer.musicDirectory;
@@ -267,7 +279,7 @@ Server::musicDirectory()
 /******************************************************************************!
  * \fn checksum
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Server::checksum()
 {
     DEBUG("");
@@ -292,11 +304,11 @@ Server::checksum()
         }
     }
 
-    Json::Value json = mPlayer.currentTitle();
+    nlohmann::json js = mPlayer.currentTitle();
     if (cs) {
-        json["cs"] = cs;
+        js["cs"] = cs;
     } else {
-        json["abrev"] = mAbrev;
+        js["abrev"] = mAbrev;
     }
-    return json;
+    return js;
 }

@@ -72,10 +72,13 @@ main(int argc, char** argv)
     List list(player.musicDirectory);
     player.resume(list.readResumeTime());
 
-    jsonrpc::HttpServer httpserver(8383, "", "", 2);  // 2 threads
-    Server server(httpserver, list, player);
+    Server server(list, player);
+    server.Add("info", GetHandle(&Server::info, server), {});
+    CppHttpLibServerConnector httpServer(server, 8383);
+    httpServer.StartListening();
 
     server.loop.wait(true);
+    //httpServer.StopListening();
     server.stop();
     return 0;
 }

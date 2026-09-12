@@ -9,17 +9,9 @@ HOST = armbian
 XC ?= arm-linux-gnueabihf
 XCDIR ?= $(HOME)/data/tmp
 
-include ../makefiles/cmake.mk
-include ../makefiles/gitlabci.mk
-include ../makefiles/mermaid.mk
-
-# ---------------------------------------------------------------------------- #
-# build
-# ---------------------------------------------------------------------------- #
-.PHONY: stub
-stub: abstractstubserver.h
-abstractstubserver.h: spec.json
-	@jsonrpcstub $< --cpp-server=AbstractStubServer
+include makefiles/cmake.mk
+include makefiles/gitlabci.mk
+include makefiles/mermaid.mk
 
 .PHONY: help
 help:
@@ -63,7 +55,7 @@ server:
 .PHONY: client
 client:
 	@cd build && make --no-print-directory -j`nproc` mpclient
-	@build/mpclient http://localhost:8383
+	@build/mpclient localhost
 
 .PHONY: dir
 dir:
@@ -95,5 +87,5 @@ README-0-1.svg README-0-2.svg README-0-3.svg: FORCE
 
 .PHONY: bom
 bom:
-	@../makefiles/bom.awk README.md | tee bom.tmp~
+	@makefiles/bom.awk README.md | tee bom.tmp~
 	@mv bom.tmp~ README.md

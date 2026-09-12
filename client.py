@@ -13,10 +13,10 @@ if len(sys.argv) > 2:
     server = sys.argv[1]
     method = sys.argv[2]
 elif len(sys.argv) > 1:
-    server = 'http://localhost:8383'
+    server = 'http://localhost:8383/jsonrpc'
     method = sys.argv[1]
 else:
-    server = 'http://localhost:8383'
+    server = 'http://localhost:8383/jsonrpc'
     method = 'info'
 
 data = {

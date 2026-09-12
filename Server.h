@@ -6,8 +6,8 @@
  ******************************************************************************/
 #pragma once
 #include <atomic>
-#include <jsonrpccpp/server/connectors/httpserver.h>
-#include "abstractstubserver.h"
+#include <cpphttplibconnector.hpp>
+#include <jsonrpccxx/server.hpp>
 
 class List;
 class Player;
@@ -15,29 +15,27 @@ class Player;
 /******************************************************************************!
  * \class Server
  ******************************************************************************/
-class Server : public AbstractStubServer
+class Server : public jsonrpccxx::JsonRpc2Server
 {
 public:
-    Server(jsonrpc::AbstractServerConnector& conn,
-           List& list,
-           Player& player);
-    virtual ~Server();
-    virtual Json::Value list() override;
-    virtual Json::Value info() override;
-    virtual Json::Value rand() override;
-    virtual Json::Value ok() override;
-    virtual Json::Value play() override;
-    virtual Json::Value pause() override;
-    virtual Json::Value stop() override;
-    virtual Json::Value prev() override;
-    virtual Json::Value next() override;
-    virtual Json::Value artist() override;
-    virtual Json::Value album(const std::string& artist, int pos) override;
-    virtual Json::Value pos(int pos) override;
-    virtual Json::Value dir(const std::string& path) override;
-    virtual std::string musicDirectory() override;
-    virtual Json::Value checksum() override;
-    virtual void quit() override;
+    Server(List& list, Player& player);
+    nlohmann::json list();
+    nlohmann::json info();
+    nlohmann::json rand();
+    nlohmann::json ok();
+    nlohmann::json play();
+    nlohmann::json pause();
+    nlohmann::json stop();
+    nlohmann::json prev();
+    nlohmann::json next();
+    nlohmann::json artist();
+    nlohmann::json album(const std::string& artist, int pos);
+    nlohmann::json pos(int pos);
+    nlohmann::json dir(const std::string& path);
+    const std::string& musicDirectory();
+    nlohmann::json checksum();
+    void quit();
+    ~Server();
 
     std::atomic_bool loop = true;
     List& mList;

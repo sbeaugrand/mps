@@ -5,7 +5,7 @@
  * \copyright CeCILL 2.1 Free Software license
  ******************************************************************************/
 #pragma once
-#include <jsoncpp/json/value.h>
+#include <nlohmann/json.hpp>
 #include <mpd/client.h>
 
 class Player
@@ -17,11 +17,11 @@ public:
     Player() {}
     ~Player();
     int init();
-    Json::Value currentAlbum();
-    Json::Value currentTitle();
+    nlohmann::json currentAlbum();
+    nlohmann::json currentTitle();
     void resume(int milliseconds);
     unsigned int getPlaytime();
-    Json::Value titleList();
+    nlohmann::json titleList();
     void start();
     void startId(int pos);
     void startRel(int pos);

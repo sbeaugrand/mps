@@ -17,11 +17,13 @@ add_executable(mpserver
     Server.cpp
     path.cpp
 )
+target_include_directories(mpserver PRIVATE
+    json-rpc-cxx/include
+    json-rpc-cxx/vendor
+    json-rpc-cxx/examples
+)
 target_link_libraries(mpserver PRIVATE
     mpdclient
-    jsoncpp
-    jsonrpccpp-common
-    jsonrpccpp-server
 )
 
 add_executable(mpclient
@@ -30,10 +32,10 @@ add_executable(mpclient
     Output.cpp
     Client.cpp
 )
-target_link_libraries(mpclient PRIVATE
-    jsoncpp
-    jsonrpccpp-common
-    jsonrpccpp-client
+target_include_directories(mpclient PRIVATE
+    json-rpc-cxx/include
+    json-rpc-cxx/vendor
+    json-rpc-cxx/examples
 )
 
 add_executable(mpssaver

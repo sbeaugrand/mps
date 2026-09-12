@@ -143,10 +143,10 @@ Player::getPlaytime()
 /******************************************************************************!
  * \fn titleList
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Player::titleList()
 {
-    Json::Value r;
+    nlohmann::json r;
     unsigned int playtime;
     int pos;
     struct mpd_song* song = NULL;
@@ -168,7 +168,7 @@ Player::titleList()
 
     r["song"] = {};
     for (count = 0; count < length; ++count) {
-        Json::Value s;
+        nlohmann::json s;
         song = mpd_run_get_queue_song_pos(mConn, count);
         if (this->isError(__FUNCTION__)) {
             if (song != NULL) {
@@ -206,7 +206,7 @@ Player::titleList()
             }
         }
         mpd_song_free(song);
-        r["song"].append(s);
+        r["song"] += s;
     }
 
     return r;
@@ -385,10 +385,10 @@ Player::m3u(std::string_view album)
 /******************************************************************************!
  * \fn currentTitle
  ******************************************************************************/
-Json::Value
+nlohmann::json
 Player::currentTitle()
 {
-    Json::Value r;
+    nlohmann::json r;
 
     struct mpd_status* status = this->getMPDStatus();
     if (status == NULL) {

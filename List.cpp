@@ -57,6 +57,9 @@ List::rand() const
     if (r < 0) {
         std::srand(std::time(nullptr));
     }
+    if (mWeightSum == 0) {
+        return { "/error: -  - weight sum/", "XX", -1 };
+    }
     r = std::rand() / ((RAND_MAX / mWeightSum) + 1);
 
     int max = 0;
@@ -82,11 +85,11 @@ List::rand() const
 /******************************************************************************!
  * \fn artist
  ******************************************************************************/
-Json::Value
+nlohmann::json
 List::artist(const std::string& artist,
              const std::string& album) const
 {
-    Json::Value r;
+    nlohmann::json r;
     std::string search;
     std::string current;
 
@@ -114,7 +117,7 @@ List::artist(const std::string& artist,
             auto path = al.substr(11);
             if (path.starts_with(search + " - ")) {
                 const auto [arti, date, albu] = ::splitPath(path);
-                r["album"].append(date + "  " + albu);
+                r["album"] += date + "  " + albu;
                 if (albu == current) {
                     r["pos"] = count;
                     DEBUG("pos " << count);
@@ -223,10 +226,10 @@ List::writeLog(std::string_view album) const
 /******************************************************************************!
  * \fn dir
  ******************************************************************************/
-Json::Value
+nlohmann::json
 List::dir(const std::string& path) const
 {
-    Json::Value result;
+    nlohmann::json result;
     std::list<std::string> list;
     try {
         std::filesystem::directory_iterator d(mPath + '/' + path);
@@ -246,7 +249,7 @@ List::dir(const std::string& path) const
     }
     list.sort();
     for (const auto& d : list) {
-        result["dir"].append(d);
+        result["dir"] += d;
     }
     return result;
 }
