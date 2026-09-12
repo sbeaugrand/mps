@@ -1,0 +1,29 @@
+Source: mps
+Section: sound
+Priority: optional
+Maintainer: sbeaugrand <sbeaugrand@toto.fr>
+Rules-Requires-Root: no
+Build-Depends:
+ debhelper-compat (= 13),
+ cmake (>= 3.18),
+ libjsonrpccpp-dev (>= 1.4.1),
+ libmraa-dev (>= 2.2.0),
+ libupm-dev (>= 2.0.0),
+ libmpdclient-dev (>= 2.20),
+ liblirc-dev (>= 0.10.1),
+Standards-Version: 4.6.2
+Homepage: https://github.com/sbeaugrand/debinst/tree/master/cicd/mps
+
+Package: mps
+Architecture: any
+Depends:
+ libjsonrpccpp-client0 (>= 1.4.1),
+ libjsonrpccpp-common0 (>= 1.4.1),
+ libjsonrpccpp-server0 (>= 1.4.1),
+ libupm-lcd2 (>= 2.0.0),
+ libmpdclient2t64 (>= 2.22),
+ liblirc-client0t64 (>= 0.10.2),
+ ${shlibs:Depends},
+ ${misc:Depends},
+Description: music player server
+ C++ music player server with weighted random album selection

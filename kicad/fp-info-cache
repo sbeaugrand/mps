@@ -1,0 +1,533 @@
+119807249540136
+Connector_BarrelJack
+BarrelJack_CLIFF_FC681465S_SMT_Horizontal
+Surface-mount DC Barrel Jack, https://www.cliffuk.co.uk/products/dcconnectors/FC681465S.pdf
+Power Jack SMT
+0
+4
+3
+Connector_BarrelJack
+BarrelJack_CUI_PJ-036AH-SMT_Horizontal
+Surface-mount DC Barrel Jack, http://www.cui.com/product/resource/pj-036ah-smt.pdf
+Power Jack SMT
+0
+3
+3
+Connector_BarrelJack
+BarrelJack_CUI_PJ-063AH_Horizontal
+Barrel Jack, 2.0mm ID, 5.5mm OD, 24V, 8A, no switch, https://www.cui.com/product/resource/pj-063ah.pdf
+barrel jack cui dc power
+0
+4
+3
+Connector_BarrelJack
+BarrelJack_CUI_PJ-063AH_Horizontal_CircularHoles
+Barrel Jack, 2.0mm ID, 5.5mm OD, 24V, 8A, no switch, https://www.cui.com/product/resource/pj-063ah.pdf
+barrel jack cui dc power
+0
+4
+3
+Connector_BarrelJack
+BarrelJack_CUI_PJ-102AH_Horizontal
+Thin-pin DC Barrel Jack, https://cdn-shop.adafruit.com/datasheets/21mmdcjackDatasheet.pdf
+Power Jack
+0
+3
+3
+Connector_BarrelJack
+BarrelJack_GCT_DCJ200-10-A_Horizontal
+Barrel jack connector (5.5 mm outer diameter, 2.05 inner diameter ), https://gct.co/files/drawings/dcj200-10.pdf
+connector barrel jack
+0
+3
+3
+Connector_BarrelJack
+BarrelJack_Horizontal
+DC Barrel Jack
+Power Jack
+0
+3
+3
+Connector_BarrelJack
+BarrelJack_Kycon_KLDX-0202-xC_Horizontal
+DC Barrel Jack 2mm or 2.5mm center pin, https://www.kycon.com/Pub_Eng_Draw/KLDX-0202-AC%20&%20BC.pdf
+power jack 2mm 2.5mm KLDX-0202-BC KLDX-0202-AC
+0
+3
+3
+Connector_BarrelJack
+BarrelJack_SwitchcraftConxall_RAPC10U_Horizontal
+DC Power Jack, 13A, 24V, Panel Mount,Through-hole, https://www.switchcraft.com/Drawings/RAPC10U_CD.pdf
+barreljack switchcraftconxall dc power
+0
+2
+2
+Connector_BarrelJack
+BarrelJack_Wuerth_6941xx301002
+Wuerth electronics barrel jack connector (5.5mm outher diameter, inner diameter 2.05mm or 2.55mm depending on exact order number), See: http://katalog.we-online.de/em/datasheet/6941xx301002.pdf
+connector barrel jack
+0
+3
+3
+common
+AFFICHEUR-DOUBLE
+7 segments display
+DISPLAY
+0
+16
+16
+common
+B8
+
+
+0
+1
+1
+common
+BN641138
+
+
+0
+2
+2
+common
+BR2
+Breaker
+
+0
+2
+2
+common
+BR3
+Breaker
+
+0
+2
+2
+common
+BR4
+Breaker
+
+0
+2
+2
+common
+BR5
+Breaker
+
+0
+2
+2
+common
+BR6
+Breaker
+
+0
+2
+2
+common
+BUCK
+
+
+0
+4
+4
+common
+BUCK_MAKERFACTORY
+
+
+0
+4
+4
+common
+BarrelJack_Horizontal
+DC Barrel Jack
+Power Jack
+0
+3
+3
+common
+C2
+Condensateur = 2 pas
+C
+0
+2
+2
+common
+C2V8
+Condensateur polarise
+CP
+0
+2
+2
+common
+CP2
+Capacitor, pol, cyl 5x11mm
+
+0
+2
+2
+common
+CP_5x11mm
+Capacitor, pol, cyl 5x11mm
+
+0
+2
+2
+common
+D3
+Diode 3 pas
+DIODE DEV
+0
+2
+2
+common
+D4
+Diode 3 pas
+DIODE DEV
+0
+2
+2
+common
+DIP-8__300
+8 pins DIL package, round pads
+DIL
+0
+8
+8
+common
+DIP-16__300
+8 pins DIL package, round pads
+
+0
+16
+16
+common
+DIP-18__300
+8 pins DIL package, round pads
+
+0
+18
+18
+common
+DIP-20__300
+Module Dil 20 pins
+DIL
+0
+20
+20
+common
+DUAL_POT
+
+
+0
+6
+6
+common
+ELECTRET
+Transistor TO92 brochage type BC337
+TR TO92
+0
+2
+2
+common
+ENTRETOISE
+
+
+0
+0
+0
+common
+J302BG
+
+
+0
+4
+4
+common
+LCD_16
+LCD 16 pins
+CONN DEV
+0
+20
+16
+common
+LED-3MM
+LED 3mm - Lead pitch 100mil (2,54mm)
+LED led 3mm 3MM 100mil 2,54mm
+0
+2
+2
+common
+LED-5MM
+LED 5mm - Lead pitch 100mil (2,54mm)
+LED led 5mm 5MM 100mil 2,54mm
+0
+2
+2
+common
+LM2576
+
+
+0
+5
+5
+common
+MICROSWITCH_SPST
+Connecteur 3 pins
+CONN DEV
+0
+3
+3
+common
+Multiwatt5
+5 pins TO220 package, round pads
+
+0
+5
+5
+common
+Multiwatt15
+8 pins DIL package, round pads
+
+0
+15
+15
+common
+NANOPI_NEO
+
+
+0
+24
+24
+common
+NPN
+Transistor TO92 brochage type BC337
+TR TO92
+0
+3
+3
+common
+ORANGEPI_ZERO
+
+
+0
+26
+26
+common
+PI
+
+
+0
+24
+24
+common
+PIN_ARRAY_1X1
+module 1 pin (ou trou mecanique de percage)
+DEV
+0
+1
+1
+common
+PIN_ARRAY_2X1
+Connecteurs 2 pins
+CONN DEV
+0
+2
+2
+common
+PIN_ARRAY_3X1
+Connecteur 6 pins
+CONN DEV
+0
+3
+3
+common
+PIN_ARRAY_4X1
+Connecteur 6 pins
+CONN DEV
+0
+4
+4
+common
+PIN_ARRAY_5X1
+Connecteur 6 pins
+CONN DEV
+0
+5
+5
+common
+PIN_ARRAY_6X1
+Connecteur 6 pins
+CONN DEV
+0
+6
+6
+common
+PIN_ARRAY_9X1
+Connecteur 9 pins
+CONN DEV
+0
+9
+9
+common
+PIN_ARRAY_13X2
+Connecteur 26 pins
+CONN DEV
+0
+26
+26
+common
+PIN_ARRAY_13x1
+Connecteur 26 pins
+CONN DEV
+0
+13
+13
+common
+PIN_ARRAY_14X1
+Connecteur 15 pins
+CONN DEV
+0
+14
+14
+common
+PIN_ARRAY_15X1
+Connecteur 15 pins
+CONN DEV
+0
+15
+15
+common
+PLATINE_100x50
+
+
+0
+0
+0
+common
+PLATINE_100x75
+
+
+0
+0
+0
+common
+PLATINE_160x100
+
+
+0
+0
+0
+common
+PLATINE_200x100
+
+
+0
+0
+0
+common
+POT
+
+
+0
+3
+3
+common
+POT_V
+Connecteurs 2 pins
+CONN DEV
+0
+3
+3
+common
+QUARTZ
+
+
+0
+2
+2
+common
+R3
+Resitance 3 pas
+R
+0
+2
+2
+common
+R4
+Resitance 4 pas
+R
+0
+2
+2
+common
+ROCKPI_S
+
+
+0
+24
+24
+common
+RPI_B
+Connecteur 26 pins
+CONN DEV
+0
+28
+26
+common
+SELF
+
+
+0
+2
+2
+common
+SW_PUSH_SMALL
+
+
+0
+4
+2
+common
+TO92-CBE
+Transistor TO92 brochage type BC337
+TR TO92
+0
+3
+3
+common
+TO220_VERT
+Regulateur TO220 serie LM78xx
+TR TO220
+0
+3
+3
+common
+TRANSFO_2S
+
+
+0
+6
+6
+common
+USB4
+
+
+0
+4
+4
+common
+USB5
+
+
+0
+6
+4
+common
+VMA301
+Connecteur 6 pins
+CONN DEV
+0
+5
+5
