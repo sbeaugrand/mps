@@ -4,3 +4,11 @@
 [submodule "makefiles"]
 	path = makefiles
 	url = https://github.com/sbeaugrand/makefiles.git
+[submodule "upm"]
+	path = upm
+	url = https://github.com/eclipse-upm/upm.git
+	shallow = true
+[submodule "mraa"]
+	path = mraa
+	url = https://github.com/sbeaugrand/mraa.git
+	shallow = true

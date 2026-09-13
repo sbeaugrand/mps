@@ -7,7 +7,7 @@
 #pragma once
 #include <thread>
 #if defined(__arm__) || defined(__aarch64__)
-# include <upm/ssd1306.hpp>
+# include <ssd1306.hpp>
 #else
 # include "Terminal.h"
 #endif

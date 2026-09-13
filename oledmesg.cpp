@@ -6,13 +6,15 @@
  ******************************************************************************/
 #include <argp.h>
 #if defined(__arm__) || defined(__aarch64__)
-# include <upm/ssd1306.hpp>
+# include <ssd1306.hpp>
 #else
 # include "Terminal.h"
 #endif
 #include "log.h"
 
 #define DEVICE_ADDRESS 0x3C
+
+const char* gVERSION = "v2.2.0";  // grep "set (VERSION " mraa/CMakeLists.txt
 
 /******************************************************************************!
  * argp

@@ -22,6 +22,28 @@ help:
 	@echo
 
 # ---------------------------------------------------------------------------- #
+# docker
+# ---------------------------------------------------------------------------- #
+.PHONY: docker-help
+docker-help:
+	@echo
+	@echo "docker build -f Dockerfile.armhf -t debian-armhf ."
+	@echo "docker build -f Dockerfile.arm64 -t debian-arm64 ."
+	@echo "make docker-make XC=arm-linux-gnueabihf"
+	@echo "make docker-make XC=aarch64-linux-gnu"
+	@echo "make docker-package XC=arm-linux-gnueabihf"
+	@echo "make docker-package XC=aarch64-linux-gnu"
+	@echo
+
+.PHONY: docker-make
+docker-make:
+	@XC=$(XC) ./docker-make.sh
+
+.PHONY: docker-package
+docker-package:
+	@./docker-make.sh ./docker-package.sh
+
+# ---------------------------------------------------------------------------- #
 # interface
 # ---------------------------------------------------------------------------- #
 BROWSER = chromium
