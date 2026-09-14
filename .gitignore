@@ -6,3 +6,8 @@ __pycache__
 README-*.svg
 README-0.md
 kicad/*.svg
+*-pr-*
+*-cache*
+*-bak
+*.net
+*.pdf

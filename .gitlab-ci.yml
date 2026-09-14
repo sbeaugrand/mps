@@ -54,6 +54,7 @@ test:
       cppcheck -q --enable=all --suppressions-list=cppcheck.supp
       --template='{id}:{file}:{line} ({severity}) {message}'
       -i build -i build-*
+      -i json-rpc-cxx -i mraa -i upm
       --suppress=missingIncludeSystem --suppress=checkersReport
       -UNERROR -UNERRNO -UNDEBUG --check-level=exhaustive
       --error-exitcode=2
