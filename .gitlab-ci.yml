@@ -7,6 +7,7 @@
 variables:
   PACKAGE: mps
   RPCLIBS: http://gitlab.local.fr/api/v4/projects/group%2Flibjsonrpccpp
+  GIT_SUBMODULE_STRATEGY: normal
 prebuild:
   stage: build
   script:
@@ -19,6 +20,7 @@ prebuild:
       cat /usr/lib/binfmt.d/qemu-arm.conf >/proc/sys/fs/binfmt_misc/register
 build:
   stage: build
+  timeout: 2h
   script:
     - dpkg-source -b .
     - >

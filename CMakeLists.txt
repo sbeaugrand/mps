@@ -5,13 +5,22 @@
 ## \copyright CeCILL 2.1 Free Software license
 # ---------------------------------------------------------------------------- #
 cmake_minimum_required(VERSION 3.18)
-include(xc.cmake)
 project(mps)
-include(include.cmake)
+include(makefiles/xc.cmake)
+if(XC
+        OR DOCKER_XC
+        OR ${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL aarch64
+        OR ${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL armv7l)
+    set(CMAKE_CXX_STANDARD 20)
+    set(CMAKE_CXX_EXTENSIONS OFF)
+    add_compile_options(
+        "-O1" "-D_FORTIFY_SOURCE=2" "-fmax-errors=1"
+        "-fcompare-debug-second" "-Wno-unused-result"
+    )
+else()
+    include(makefiles/include.cmake)
+endif()
 message(CMAKE_HOST_SYSTEM_PROCESSOR=${CMAKE_HOST_SYSTEM_PROCESSOR})
-add_compile_options(
-    "-DARMPLAT"
-)
 
 set(RPC_ID
     json-rpc-cxx/include
@@ -68,61 +77,68 @@ set(LCD
     upm/src/lcd/lcd.cxx
 )
 
+if(XC
+        OR DOCKER_XC
+        OR ${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL aarch64
+        OR ${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL armv7l)
+    add_compile_options(
+        "-DARMPLAT"
+    )
+    set(SOURCES
+        ${LCD}
+    )
+endif()
+
 add_executable(mpserver
-    mpserver.cpp
-    List.cpp
-    Player.cpp
-    Server.cpp
-    path.cpp
+    src/mpserver.cpp
+    src/List.cpp
+    src/Player.cpp
+    src/Server.cpp
+    src/path.cpp
+)
+add_executable(mpclient
+    src/mpclient.cpp
+    src/Input.cpp
+    src/Output.cpp
+    src/Client.cpp
+    ${SOURCES}
+)
+add_executable(mpssaver
+    src/mpssaver.cpp
+    src/Input.cpp
+    src/Output.cpp
+    ${SOURCES}
+)
+add_executable(oledmesg
+    src/oledmesg.cpp
+    ${SOURCES}
 )
 target_include_directories(mpserver PRIVATE
+    ${RPC_ID}
+)
+target_include_directories(mpclient PRIVATE
     ${RPC_ID}
 )
 target_link_libraries(mpserver PRIVATE
     mpdclient
 )
 
-add_executable(mpclient
-    ${LCD}
-    mpclient.cpp
-    Input.cpp
-    Output.cpp
-    Client.cpp
-)
-target_include_directories(mpclient PRIVATE
-    ${RPC_ID}
-    ${LCD_ID}
-)
-target_link_libraries(mpclient PRIVATE
-    lirc_client
-)
-
-add_executable(mpssaver
-    ${LCD}
-    mpssaver.cpp
-    Input.cpp
-    Output.cpp
-)
-target_include_directories(mpssaver PRIVATE
-    ${LCD_ID}
-)
-target_link_libraries(mpssaver PRIVATE
-    lirc_client
-)
-
-add_executable(oledmesg
-    ${LCD}
-    oledmesg.cpp
-)
-target_include_directories(oledmesg PRIVATE
-    ${LCD_ID}
-)
 
 install(TARGETS mpserver mpclient mpssaver oledmesg)
 
 if(XC
+        OR DOCKER_XC
         OR ${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL aarch64
         OR ${CMAKE_HOST_SYSTEM_PROCESSOR} STREQUAL armv7l)
+    target_include_directories(mpclient PRIVATE
+        ${LCD_ID}
+    )
+    target_include_directories(mpssaver PRIVATE
+        ${LCD_ID}
+    )
+    target_include_directories(oledmesg PRIVATE
+        ${LCD_ID}
+    )
     target_link_libraries(mpclient PRIVATE
         lirc_client
     )

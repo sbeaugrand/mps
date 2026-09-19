@@ -7,18 +7,18 @@
 variables:
   PROJECT: mps
   BLIST: mpserver mpclient mpssaver oledmesg
-  lserver: http://localhost:8383
+  lserver: http://localhost:8383/jsonrpc
   musicdir: /data/mp3
   verbose: -v
 include:
-  - local: /../makefiles/package.yml
+  - local: /makefiles/package.yml
 test1:
   stage: test
   script:
     - make --no-print-directory
     - systemctl -q is-active mpd || sudo systemctl start mpd
-    - ./test1.py $lserver $musicdir $verbose
+    - ./test/test1.py $lserver $musicdir $verbose
 test2:
   stage: stest
   script:
-    - ./client.py http://pi:8383 pause
+    - ./client.py http://pi:8383/jsonrpc pause

@@ -6,7 +6,6 @@
 # ---------------------------------------------------------------------------- #
 BHOST = debian13
 HOST = armbian
-XC ?= arm-linux-gnueabihf
 XCDIR ?= $(HOME)/data/tmp
 CPPCHECKINC = -ijson-rpc-cxx -imraa -iupm
 

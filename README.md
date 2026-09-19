@@ -15,7 +15,8 @@ json-rpc-cxx:
 - compile time x2
 - binary size x3
 
-# Readme from https://github.com/sbeaugrand/debinst/tree/master/cicd/mps
+# Readme from
+https://github.com/sbeaugrand/debinst/tree/master/cicd/mps
 ```sh
 make help  # :
 ```
