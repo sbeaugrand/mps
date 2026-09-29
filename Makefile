@@ -16,13 +16,7 @@ include makefiles/mermaid.mk
 
 .PHONY: help
 help:
-	@echo
-	@echo "# docker-help:" | grep --color '.*'
 	@make --no-print-directory docker-help
-	@$(call print-help,Create chroot)
-	@echo
-	@$(call print-help,Build libs)
-	@echo
 
 # ---------------------------------------------------------------------------- #
 # interface

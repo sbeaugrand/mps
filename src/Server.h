@@ -6,8 +6,8 @@
  ******************************************************************************/
 #pragma once
 #include <atomic>
-#include <cpphttplibconnector.hpp>
 #include <jsonrpccxx/server.hpp>
+#include "cpphttplibconnector.hpp"
 
 class List;
 class Player;

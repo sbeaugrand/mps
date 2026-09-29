@@ -1,15 +1,16 @@
 # Build
 ```sh
-make docker-help  # :
+make help  # :
 ```
 ```sh
-docker build -f Dockerfile.armhf -t debian-armhf .
-docker build -f Dockerfile.arm64 -t debian-arm64 .
-make docker-make XC=arm-linux-gnueabihf
-make docker-make XC=aarch64-linux-gnu
-make docker-package XC=arm-linux-gnueabihf
-make docker-package XC=aarch64-linux-gnu
+docker build -f makefiles/Dockerfile.armhf -t debian13-armhf .
+docker build -f makefiles/Dockerfile.arm64 -t debian13-arm64 .
+make docker-xc XC=arm-linux-gnueabihf
+make docker-xp XC=arm-linux-gnueabihf
+make docker-xc XC=aarch64-linux-gnu
+make docker-xp XC=aarch64-linux-gnu
 ```
+
 ## Comparison between jsonrpccpp and json-rpc-cxx
 json-rpc-cxx:
 - compile time x2
@@ -17,9 +18,6 @@ json-rpc-cxx:
 
 # Readme from
 https://github.com/sbeaugrand/debinst/tree/master/cicd/mps
-```sh
-make help  # :
-```
 
 ## Create chroot
 <details>

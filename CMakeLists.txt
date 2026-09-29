@@ -20,12 +20,13 @@ if(XC
 else()
     include(makefiles/include.cmake)
 endif()
-message(CMAKE_HOST_SYSTEM_PROCESSOR=${CMAKE_HOST_SYSTEM_PROCESSOR})
+set(CMAKE_BUILD_TYPE "Debug")
+
+message("CMAKE_CXX_COMPILER = ${CMAKE_CXX_COMPILER}")
 
 set(RPC_ID
     json-rpc-cxx/include
     json-rpc-cxx/vendor
-    json-rpc-cxx/examples
 )
 set(MRAA_ID
     mraa/api
