@@ -324,17 +324,20 @@ Client::onEvent(const state::Album&, const event::Ok&)
         nlohmann::json params;
         params["artist"] = mArtist["artist"];
         params["pos"] = mAlbumPos;
-        this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(
+        this->currentTitle(mJsonClient.CallMethodNamed<nlohmann::json>(
                                1, "album", params));
     } catch (jsonrpccxx::JsonRpcException& e) {
+        ERROR(e.what());
+    } catch (const std::exception& e) {
         ERROR(e.what());
     }
     return state::Normal{};
 }
 State
-Client::onEvent(const state::Album& state, const event::Setup&)
+Client::onEvent(const state::Album&, const event::Setup&)
 {
-    return state;
+    this->currentTitle(mJsonClient.CallMethod<nlohmann::json>(1, "info"));
+    return state::Normal{};
 }
 
 State
@@ -407,11 +410,19 @@ State
 Client::onEvent(const state::Artist&, const event::Setup&)
 {
     try {
+        auto artist = mArtist.value<std::string>("artist", "");
+        if (artist.empty()) {
+            this->currentTitle(
+                mJsonClient.CallMethod<nlohmann::json>(1, "info"));
+            return state::Normal{};
+        }
         nlohmann::json params;
-        params["artist"] = mArtist["artist"];
+        params["artist"] = artist;
         params["pos"] = -1;
-        mJsonClient.CallMethod<nlohmann::json>(1, "album", params);
+        mJsonClient.CallMethodNamed<nlohmann::json>(1, "album", params);
     } catch (jsonrpccxx::JsonRpcException& e) {
+        ERROR(e.what());
+    } catch (const std::exception& e) {
         ERROR(e.what());
     }
     return this->onEvent(state::Normal{}, event::Left{});
