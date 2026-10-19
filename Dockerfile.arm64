@@ -1,0 +1,12 @@
+# ---------------------------------------------------------------------------- #
+## \file Dockerfile.arm64
+## \author Sebastien Beaugrand
+## \sa http://beaugrand.chez.com/
+## \copyright CeCILL 2.1 Free Software license
+# ---------------------------------------------------------------------------- #
+FROM debian13-arm64-base
+
+RUN export DEBIAN_FRONTEND=noninteractive\
+ && apt-get -y install --no-install-recommends\
+    liblirc-dev:arm64\
+    libmpdclient-dev:arm64
